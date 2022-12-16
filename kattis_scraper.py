@@ -39,15 +39,16 @@ def getSolvedProblems(username, password):
     # iterate through all pages of solved problems and grab their names
     solved_problems = []
     while True:
-        nxt = soup.find('a', {'id': 'problem_list_next'})
-        tds = soup.findAll("tr", {"class": "solved"})
+        nxt = soup.findAll('a', {'id': 'problem_list_previous'})[1]
+        tbody = soup.find("tbody")
+        tds = tbody.findAll("tr")
         for problem in tds:
-            td = (problem.find("td", {"class": "name_column"}))
+            td = problem.find("td")
             solved_problems.append(td.find("a").contents[0])
         # if there's another page, navigate to it. otherwise, we're doen
         if nxt.has_attr('href'):
             link = nxt['href']
-            link = "https://open.kattis.com" + link
+            link = "https://open.kattis.com/problems" + link
             r = s.get(link)
             soup = BeautifulSoup(r.text, 'html.parser')
         else:
