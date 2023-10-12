@@ -26,20 +26,20 @@ def getSolvedProblems(username, password):
     """
     # Start a session and log in
     s = requests.Session()
-    loginurl = "https://open.kattis.com/login/email"
+    loginurl = "https://open.kattis.com/login"
     if login(s, loginurl, username, password).text != "Login successful":
         print("Couldn't log you in. Are you sure you're using the right username/password?")
         return []
 
     # navigate to the solved problems page
-    url = "https://open.kattis.com/problems?order=problem_difficulty&show_solved=on&show_tried=off&show_untried=off"
+    url = "https://open.kattis.com/problems?order=problem_difficulty&f_solved=on&f_partial-score=off&f_tried=off&f_untried=off&f_language=-1"
     r = s.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
 
     # iterate through all pages of solved problems and grab their names
     solved_problems = []
     while True:
-        nxt = soup.findAll('a', {'id': 'problem_list_previous'})[1]
+        nxt = soup.findAll('a', {'role': 'button'})[-1]
         tbody = soup.find("tbody")
         tds = tbody.findAll("tr")
         for problem in tds:
